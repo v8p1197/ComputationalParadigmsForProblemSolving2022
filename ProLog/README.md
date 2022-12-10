@@ -1,6 +1,8 @@
 # ProLog
 
-This directory contains a script for converting a valid boolean expression is its equivalent Disjunctive Normal Form (DNF).
+This directory contains a ProLog script for converting a valid boolean expression is its equivalent Disjunctive Normal Form (DNF).
+
+Check the [documentation](#documentation) to know the semantics and the [examples](#examples) to know the syntax.
 
 ## Documentation
 

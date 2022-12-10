@@ -6,8 +6,15 @@ Check the [documentation](#documentation) to know the semantics and the [example
 
 ## Documentation
 
-- `dnf(E, F)` is `true` if and only if `F` is the DNF of expression `E`.
-- `isdnf(E)` is `true` if and only if `E` is a DNF.
+`dnf(E, F)` is `true` if and only if `F` is the DNF of expression `E`.
+
+## Usage
+
+To use this script, first consult it in your prolog environment:
+
+```bash
+swipl disjunctive_normal_form.pl
+```
 
 ## Examples
 

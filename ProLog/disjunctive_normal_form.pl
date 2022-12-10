@@ -7,7 +7,6 @@
 %
 % Documentation:
 % dnf(E, F) is true if and only if F is the DNF of expression E.
-% isdnf(E) is true if and only if E is a DNF.
 % 
 % Examples:
 % * dnf(-(a+b), E).
@@ -30,6 +29,12 @@
 dnf(A*(B+C), X + Y) :-
 	dnf(A, SA), dnf(B, SB), dnf(C, SC),
 	dnf(SA*SB, X), dnf(SA*SC, Y).
+dnf((A+B)*C, X + Y) :-
+	dnf(A, SA), dnf(B, SB), dnf(C, SC),
+	dnf(SA*SC, X), dnf(SB*SC, Y).
+dnf((A+B)*(C+D), W + X + Y + Z) :-
+	dnf(A, SA), dnf(B, SB), dnf(C, SC), dnf(D, SD),
+	dnf(SA*SC, W), dnf(SA*SD, X), dnf(SB*SC, Y), dnf(SB*SD, Z).
 
 % De Morgan's OR Property
 dnf(-(A+B), X) :-
@@ -60,10 +65,3 @@ dnf(A*B, SA*SB) :- dnf(A,SA), dnf(B,SB).
 isliteral(X) :- atom(X).
 % ...or a negated variable
 isliteral(-X) :- atom(X).
-
-% --------- %
-% Interface %
-% --------- %
-
-% An expression is a DNF if and only if its DNF is the expression itself
-isdnf(E) :- dnf(E, E).

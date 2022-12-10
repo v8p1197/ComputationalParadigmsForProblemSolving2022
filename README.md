@@ -1,4 +1,4 @@
-# ComputationalParadigmsForProblemSolving2022
+# Computational Paradigms For Problem Solving 2022
 
 This repository contains the code as the assignment for the final assessment of the course "Computational Paradigms for Problem Solving", as part of the Ph.D. programme in Information Engineering at University of Salerno.
 

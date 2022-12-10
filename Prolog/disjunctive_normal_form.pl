@@ -8,6 +8,17 @@
 % Documentation:
 % dnf(E, F) is true if and only if F is the DNF of expression E.
 % isdnf(E) is true if and only if E is a DNF.
+% 
+% Examples:
+% * dnf(-(a+b), E).
+%   gives
+%   E = -a * -b
+% * dnf(x*(a+b), E).
+%   gives
+%   E = x*a + x*b
+% * dnf(- -x * (- -a + -b * (c + -d)), E).
+%   gives
+%   E = x*a + (x * (-b * c) + x* (-b * -d))
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -41,10 +52,9 @@ dnf(- - A, SA) :- dnf(A, SA).
 % An expression is already a DNF if it is a literal
 dnf(A, A) :- isliteral(A).
 
-dnf(A+B, SA+SB) :-
-	dnf(A,SA), dnf(B,SB).
-dnf(A*B, SA*SB) :-
-	dnf(A,SA), dnf(B,SB).
+% Simplify OR and AND with the DNFs
+dnf(A+B, SA+SB) :- dnf(A,SA), dnf(B,SB).
+dnf(A*B, SA*SB) :- dnf(A,SA), dnf(B,SB).
 
 % An expression X is a literal if and only if it is either a variable...
 isliteral(X) :- atom(X).
@@ -55,5 +65,5 @@ isliteral(-X) :- atom(X).
 % Interface %
 % --------- %
 
-% An expression is in DNF if and only if its DNF is the expression itself
+% An expression is a DNF if and only if its DNF is the expression itself
 isdnf(E) :- dnf(E, E).

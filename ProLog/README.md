@@ -28,13 +28,14 @@ Check the [documentation](#documentation) to know the semantics and the [example
   ```prolog
   dnf(x*(a+b), E).
   ```
+
   gives
   
   ```text
   E = x*a + x*b
   ```
 
-* Querying 
+- Querying
   
   ```prolog
   dnf(- -x * (- -a + -b * (c + -d)), E).

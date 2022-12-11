@@ -87,9 +87,14 @@
 ; add-series ;
 ; ---------- ;
 
+; Returns a stream representing the series S(x) = S1(x) + S2(x),
+; and exp-func is a function returning the exponent function of x
+(define (add-power-series exp-func S1 S2 x)
+  (evaluate-power-series exp-func (+-streams S1 S2) x))
+
 ; Returns a stream representing the series S(x) = S1(x) + S2(x)
 (define (add-series S1 S2 x)
-  (evaluate-series (+-streams S1 S2) x))
+  (add-power-series exp-exp-func S1 S2 x))
 
 ; --------------- ;
 ; multiply-series ;
@@ -101,16 +106,22 @@
   (stream-cons (* (stream-first a) (stream-ref b n))
                (cauchy-product (stream-rest a) b (- n 1))))
 
-
+; Returns a stream represeting the series S(x) = S1(x) * S2(x)
+; It uses the theoretical result that S(x) is the power series evaluated at x,
+; where the coefficients of S are the cachy products between S1 and S2,
+; and exp-func is a function returning the exponent function of x
+(define (multiply-power-series exp-func S1 S2 x)
+  (define (one n) 1)
+  (define (multiply-power-series-sub exp-func S1 S2 n)
+    (stream-cons (stream-ref (evaluate-power-series one (cauchy-product S1 S2 n) 1) n)
+                 (multiply-power-series-sub exp-func S1 S2 (+ n 1))))
+  (evaluate-power-series exp-func (multiply-power-series-sub exp-func S1 S2 0) x))
 
 ; Returns a stream represeting the series S(x) = S1(x) * S2(x)
 ; It uses the theoretical result that S(x) is the power series evaluated at x,
 ; where the coefficients of S are the cachy products between S1 and S2
 (define (multiply-series S1 S2 x)
-  (define (multiply-series-sub S1 S2 n)
-    (stream-cons (stream-ref (evaluate-series (cauchy-product S1 S2 n) 1) n)
-                 (multiply-series-sub S1 S2 (+ n 1))))
-  (evaluate-series (multiply-series-sub S1 S2 0) x))
+  (multiply-power-series exp-exp-func S1 S2 x))
 
 ; ---------------- ;
 ; integrate-series ;

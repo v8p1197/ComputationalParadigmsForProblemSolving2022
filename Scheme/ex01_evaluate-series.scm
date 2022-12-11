@@ -88,11 +88,7 @@
 ; ---------- ;
 
 ; Returns a stream representing the series S(x) = S1(x) + S2(x)
-(define (add-series S1 S2 x)(define (multiply-series S1 S2 x)
-  (define (multiply-series-sub S1 S2 n)
-    (stream-cons (stream-ref (evaluate-series (cauchy-product S1 S2 n) 1) n)
-                 (multiply-series-sub S1 S2 (+ n 1))))
-  (evaluate-series (multiply-series-sub S1 S2 0) x))
+(define (add-series S1 S2 x)
   (evaluate-series (+-streams S1 S2) x))
 
 ; --------------- ;

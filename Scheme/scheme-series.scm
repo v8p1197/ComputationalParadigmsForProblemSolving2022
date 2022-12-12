@@ -158,13 +158,13 @@
 ; as the integral of the sine series
 (define cos-series
   (stream-cons 1
-               (stream-map2r - 0 (integrate-power-series sin-coeffs exp-exp-func))))
+               (stream-map2r - 0 (integrate-series sin-coeffs))))
 
 ; Returns the stream of the coefficients of sine expressed
 ; as the integral of the cosine series
 (define sin-series
   (stream-cons 0
-               (integrate-power-series cos-coeffs exp-exp-func)))
+               (integrate-series cos-coeffs)))
 
 ; Returns a stream containing only the elements in stream s at even positions
 (define (only-even s)
@@ -229,7 +229,7 @@
         (* 2 exponent) decimal-tolerance e2-string
         (real->decimal-string (within tolerance (*-streams e-stream e-stream)) decimal-tolerance))
 
-; Approximate e^x with its integral (test integrate-series)
+; Approximate e^x with its integral (tests integrate-series)
 (define exp-series
   (stream-cons 1 (integrate-series exp-series)))
 (define exp (within tolerance (evaluate-series exp-series exponent)))

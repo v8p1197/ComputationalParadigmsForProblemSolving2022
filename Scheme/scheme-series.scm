@@ -126,19 +126,19 @@
 ; trigonometric-series ;
 ; -------------------- ;
 
-; returns x % 2
-(define (parity x)
-  (modulo x 2))
+; Returns +1 if n is even, -1 is n is odd
+(define (parity n)
+  (if (even? n)
+      +1
+      -1))
 
 ; Returns the stream of the coefficients of cosine expressed as Taylor series
 (define (cos-coeffs-sub n)
   (define (cos-sign n)
     (if (even? n)
-        (if (even? (/ n 2))
-            +1
-            -1)
+        (parity (/ n 2))
         0))
-  (stream-cons (* (/ (expt -1 n) (stream-ref facts n)) (- 1 (parity n)) (cos-sign n))
+  (stream-cons (/ (cos-sign n) (stream-ref facts n))
                (cos-coeffs-sub (+ n 1))))
 (define cos-coeffs (cos-coeffs-sub 0))
 
@@ -147,10 +147,8 @@
   (define (sin-sign n)
     (if (even? n)
         0
-        (if (even? (/ (+ n 1) 2))
-            +1
-            -1)))
-  (stream-cons (* (/ (expt -1 n) (stream-ref facts n)) (parity n) (sin-sign n))
+        (- (parity (/ (+ n 1) 2)))))
+  (stream-cons (/ (sin-sign n) (stream-ref facts n))
                (sin-coeffs-sub (+ n 1))))
 (define sin-coeffs (sin-coeffs-sub 0))
 
@@ -158,7 +156,7 @@
 ; as the integral of the sine series
 (define cos-series
   (stream-cons 1
-               (stream-map2r - 0 (integrate-series sin-coeffs))))
+               (stream-map - (integrate-series sin-coeffs))))
 
 ; Returns the stream of the coefficients of sine expressed
 ; as the integral of the cosine series
@@ -200,7 +198,7 @@
 
 ; Approximate e to a certain number of decimal points
 (define decimal-tolerance 20)
-(define tolerance (expt 10 (- 0 decimal-tolerance)))
+(define tolerance (expt 10 (- decimal-tolerance)))
 (define e (within tolerance e-stream))
 (define e-string (real->decimal-string e decimal-tolerance))
 (printf "* The appoximation of e^~a up to ~a decimal points is\n  ~a\n\n"
@@ -243,7 +241,7 @@
 ; ---------------------------- ;
 
 ; Generate a random number x in range ] -pi ; +pi [
-(define x (+ (- 0 pi) (* (* 2 pi) (random))))
+(define x (+ (- pi) (* (* 2 pi) (random))))
 (define precision 4)
 
 ; First, evaluate with the known coefficients...
@@ -296,7 +294,7 @@
 (define c2-mul-string (real->decimal-string c2-mul precision))
 (define s2-mul-string (real->decimal-string s2-mul precision))
 (define id-add-string (real->decimal-string id-add precision))
-(printf "* Approximating cos(x)^2 with (cos*cos)(x), sin(x)^2 with (sin*sin)(x), and cos(x)^2 + sin(x)^2 with ((cos*cos)+(sin*sin))(x)...\n  cos(~a) = ~a, sin(~a) = ~a,\n  cos(~a)^2 = ~a, sin(~a)^2 = ~a\n  cos(~a)^2 + sin(~a)^2 = ~a\n"
+(printf "* Approximating cos(x)^2 with (cos*cos)(x), sin(x)^2 with (sin*sin)(x), and cos(x)^2 + sin(x)^2 with ((cos*cos)+(sin*sin))(x)...\n  cos(~a) = ~a, sin(~a) = ~a,\n  cos(~a)^2 = ~a, sin(~a)^2 = ~a\n  cos(~a)^2 + sin(~a)^2 = ~a\n\n"
         x-string c-int-string x-string s-int-string
         x-string c2-int-string x-string s2-int-string
         x-string x-string id-int-string)

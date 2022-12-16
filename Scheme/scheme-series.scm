@@ -298,3 +298,47 @@
         x-string c-int-string x-string s-int-string
         x-string c2-int-string x-string s2-int-string
         x-string x-string id-int-string)
+
+; ------------------------------------------------------------------- ;
+; EXTRA: solve the Basel problem, i.e. summing the inverse of squares ;
+; ------------------------------------------------------------------- ;
+
+; Returns the stream of the squares of integers, i.e. 1, 4, 9, 16, ... (1^2, 2^2, 3^2, 4^2, ...) 
+(define squares
+  (*-streams (integers-from 1) (integers-from 1)))
+
+; Returns the stream of inverse of squares of integers, i.e. 1, 1/4, 1/9, 1/16, ... (1/1^1, 1/2^2, 1/3^2, 1/4^2)
+(define inv-squares
+  (stream-map2r / 1 squares))
+
+; Returns the stream that approximates π²/6 with the sum of inverse of squares of integers (the Basel problem)
+(define basel-stream (evaluate-series inv-squares 1))
+
+; Approximate π²/6
+(define basel-decimal-tolerance 7)
+(define basel-tolerance (expt 10 (- basel-decimal-tolerance)))
+
+(define basel (within basel-tolerance basel-stream)) ; Here is the apprximation
+(define basel-string (real->decimal-string basel basel-decimal-tolerance))
+
+(define basel-n 7000)
+(define basel-approx (stream-ref basel-stream basel-n))
+(define basel-approx-string (real->decimal-string basel-approx basel-decimal-tolerance))
+
+(define basel-real (/ (expt pi 2) 6))
+(define basel-real-string (real->decimal-string basel-real basel-decimal-tolerance))
+
+(define (err a b) (abs (- a b)))
+(define basel-err (err basel-real basel))
+(define basel-approx-err (err basel-real basel-approx))
+
+(printf "* The appoximation of π²/6 up to ~a decimal points is (with an error of ~a)\n  ~a\n"
+        basel-decimal-tolerance
+        (real->decimal-string basel-err basel-decimal-tolerance)
+        basel-string)
+(printf "  The ~a-th appoximation of π²/6 up to is (with an error of ~a)\n  ~a\n"
+        basel-n
+        (real->decimal-string basel-approx-err basel-decimal-tolerance)
+        basel-approx-string)
+(printf "  The actual value is\n  ~a\n\n"
+        basel-real-string)
